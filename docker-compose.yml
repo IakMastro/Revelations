@@ -1,0 +1,27 @@
+version: '3.9'
+
+services:
+  webinterface:
+    build: app
+    container_name: revelations-app
+    hostname: app
+    volumes:
+      - ./app:/app
+    environment:
+      NODE_APP: revelations
+      NODE_ENV: development
+    networks:
+      - revelations-net
+
+  docker-api:
+    build: docker-api
+    container_name: docker-management-api
+    hostname: docker-api
+    volumes:
+      - ./docker-api:/api
+    networks:
+      - revelations-net
+
+networks:
+  revelations-net:
+    name: revelations-net
