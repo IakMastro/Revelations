@@ -9,7 +9,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-type Container struct {
+type ListContainer struct {
 	ID       string    `json:"id"`
 	Names    []string  `json:"names"`
 	Ports    []uint16  `json:"ports"`
@@ -37,7 +37,7 @@ func List(c *gin.Context) {
 		panic(err)
 	}
 
-	var containersList []Container
+	var containersList []ListContainer
 	for _, container := range containers {
 		var ports []uint16
 
@@ -61,14 +61,15 @@ func List(c *gin.Context) {
 			})
 		}
 
-		containersList = append(containersList, Container{})
-		containersList[len(containersList)-1].ID = container.ID
-		containersList[len(containersList)-1].Names = container.Names
-		containersList[len(containersList)-1].Ports = ports
-		containersList[len(containersList)-1].State = container.State
-		containersList[len(containersList)-1].Status = container.Status
-		containersList[len(containersList)-1].Networks = networks
-		containersList[len(containersList)-1].Volumes = volumes
+		containersList = append(containersList, ListContainer{
+			ID:       container.ID,
+			Names:    container.Names,
+			Ports:    ports,
+			State:    container.State,
+			Status:   container.Status,
+			Networks: networks,
+			Volumes:  volumes,
+		})
 	}
 
 	c.JSON(http.StatusOK, containersList)

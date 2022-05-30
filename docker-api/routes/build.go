@@ -13,15 +13,15 @@ import (
 )
 
 type BuildContainer struct {
-	Name    string `json:"name"`
-	TarFile string `json:"tar_file"`
+	Name string `json:"name"`
+	Path string `json:"path"`
 }
 
 func imageBuild(dockerClient *client.Client, container *BuildContainer) error {
 	ctx, cancel := context.WithTimeout(context.Background(), 120*time.Second)
 	defer cancel()
 
-	tar, err := archive.TarWithOptions(container.TarFile, &archive.TarOptions{})
+	tar, err := archive.TarWithOptions(container.Path, &archive.TarOptions{})
 	if err != nil {
 		return err
 	}
@@ -56,8 +56,9 @@ func Build(c *gin.Context) {
 
 	err := imageBuild(lib.InitDockerCli(), &container)
 	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		panic(err)
 	}
 
-	c.JSON(http.StatusOK, gin.H{})
+	c.JSON(http.StatusOK, gin.H{"message": "Container was built successfully"})
 }
