@@ -11,5 +11,6 @@ func main() {
 	router.GET("/list", routes.List)
 	router.POST("/build", routes.Build)
 	router.POST("/run", routes.Run)
+	router.GET("/stop", routes.Stop)
 	router.Run(":8080")
 }
