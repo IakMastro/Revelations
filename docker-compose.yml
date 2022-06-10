@@ -13,12 +13,53 @@ services:
     networks:
       - revelations-net
 
+  middleware:
+    build: middleware
+    container_name: revelations-middleware
+    hostname: api
+    volumes:
+      - ./middleware:/middleware
+      - ./data/files:/files
+    networks:
+      - revelations-net
+
   docker-api:
     build: docker-api
     container_name: docker-management-api
     hostname: docker-api
     volumes:
       - ./docker-api:/api
+    networks:
+      - revelations-net
+
+  keycloak:
+    image: quay.io/keycloak/keycloak:legacy
+    container_name: revelations-oauth-server
+    environment:
+      DB_VENDOR: POSTGRES
+      DB_ADDR: sql
+      DB_DATABASE: users
+      DB_USER: postgres
+      DB_SCHEMA: public
+      DB_PASSWORD: pass
+      KEYCLOCK_USER: admin
+      KEYCLOCK_PASSWORD: pass
+    depends_on:
+      - sql
+    ports:
+      - 8080:8080
+    networks:
+      - revelations-net
+
+  sql:
+    image: postgres:14.2-alpine3.15
+    container_name: revelations-sql
+    hostname: sql
+    volumes:
+      - ./data/sql:/var/lib/postgres/data
+    environment:
+      POSTGRES_DB: keycloak
+      POSTGRES_PASSWORD: pass
     networks:
       - revelations-net
 
