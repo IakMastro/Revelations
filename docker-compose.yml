@@ -10,6 +10,8 @@ services:
     environment:
       NODE_APP: revelations
       NODE_ENV: development
+    env_file:
+      - .env
     networks:
       - revelations-net
 
@@ -32,34 +34,27 @@ services:
     networks:
       - revelations-net
 
-  keycloak:
-    image: quay.io/keycloak/keycloak:legacy
-    container_name: revelations-oauth-server
-    environment:
-      DB_VENDOR: POSTGRES
-      DB_ADDR: sql
-      DB_DATABASE: users
-      DB_USER: postgres
-      DB_SCHEMA: public
-      DB_PASSWORD: pass
-      KEYCLOCK_USER: admin
-      KEYCLOCK_PASSWORD: pass
-    depends_on:
-      - sql
-    ports:
-      - 8080:8080
+  postgres-oauth:
+    image: postgres:14.2-alpine3.15
+    container_name: postgres-oauth
+    hostname: postgres-oauth
+    volumes:
+      - ./data/oauth:/var/lib/postgresql/data
+    env_file:
+      - .env.oauth
     networks:
       - revelations-net
 
-  sql:
-    image: postgres:14.2-alpine3.15
-    container_name: revelations-sql
-    hostname: sql
-    volumes:
-      - ./data/sql:/var/lib/postgres/data
-    environment:
-      POSTGRES_DB: keycloak
-      POSTGRES_PASSWORD: pass
+  keycloak:
+    image: quay.io/keycloak/keycloak:legacy
+    container_name: oauth-server
+    hostname: oauth
+    env_file:
+      - .env.oauth
+    ports:
+      - 8080:8080
+    depends_on:
+      - postgres-oauth
     networks:
       - revelations-net
 

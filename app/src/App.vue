@@ -2,18 +2,19 @@
   <Header />
   <router-view/>
   <footer>
-    <p>Coded with &#10084;&#65039; by SexyCoders &copy; {{ new Date().getFullYear() }}</p>
+    <p>Coded with &#10084;&#65039; by IakMastro &copy; {{ new Date().getFullYear() }}</p>
   </footer>
 </template>
 
-<script>
+<script lang="ts">
+import { defineComponent } from 'vue'
 import Header from '@/components/Header.vue'
 
-export default {
+export default defineComponent({
   components: {
     Header
   }
-}
+})
 </script>
 
 <style lang="scss">
