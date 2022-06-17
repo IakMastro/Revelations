@@ -1,9 +1,11 @@
-FROM golang:1.18.1-alpine3.15
+FROM docker:20.10.17-dind
 
 WORKDIR /api
+ENV GOPATH /go
 
-COPY app.go .
-COPY go.mod .
+RUN apk add go
+
+COPY . .
 
 RUN go get .
 
