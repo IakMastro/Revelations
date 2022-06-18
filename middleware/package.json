@@ -2,18 +2,42 @@
   "name": "middleware",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
-  "type": "module",
+  "main": "app.ts",
   "scripts": {
-    "serve": "node index.js"
+    "serve": "tsc && node --unhandled-rejections=strict ./dist/app.js",
+    "debug": "export DEBUG=* && npm run serve",
+    "test": "mocha -r ts-node/register 'test/**/*.test.ts' --unhandled-rejections=strict",
+    "test-debug": "export DEBUG=* && npm run test"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@types/node": "^18.0.0",
     "axios": "^0.27.2",
     "cors": "^2.8.5",
+    "dotenv": "^16.0.1",
     "express": "^4.18.1",
-    "express-fileupload": "^1.4.0"
+    "express-fileupload": "^1.4.0",
+    "express-winston": "^4.2.0",
+    "mongoose": "^6.4.0",
+    "winston": "^3.7.2"
+  },
+  "devDependencies": {
+    "@types/chai": "^4.3.1",
+    "@types/cors": "^2.8.12",
+    "@types/debug": "^4.1.7",
+    "@types/express": "^4.17.13",
+    "@types/express-fileupload": "^1.2.2",
+    "@types/mocha": "^9.1.1",
+    "@types/supertest": "^2.0.12",
+    "chai": "^4.3.6",
+    "mocha": "^10.0.0",
+    "nodemon": "^2.0.16",
+    "source-map-support": "^0.5.21",
+    "supertest": "^6.2.3",
+    "ts-node": "^10.8.1",
+    "tslint": "^6.1.3",
+    "typescript": "^4.7.4"
   }
 }

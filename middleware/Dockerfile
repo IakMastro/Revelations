@@ -1,10 +1,11 @@
 FROM node:17-alpine3.13
 
 WORKDIR /api
+ENV PORT 5000
 
 COPY . .
 
-RUN yarn install
+RUN npm install
 
 EXPOSE 5000
-CMD ["yarn", "serve"]
+CMD ["npm", "run", "serve"]
