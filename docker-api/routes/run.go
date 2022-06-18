@@ -27,8 +27,8 @@ func Run(c *gin.Context) {
 	cli := lib.InitDockerCli()
 
 	resp, err := cli.ContainerCreate(ctx, &container.Config{
-		Image: args.Tag,
-	}, nil, nil, nil, args.Name)
+		Image: args.Name,
+	}, nil, nil, nil, args.Tag)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		panic(err)

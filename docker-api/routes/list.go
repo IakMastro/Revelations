@@ -21,7 +21,7 @@ type ListContainer struct {
 
 type Network struct {
 	ID        string `json:"id"`
-	IPAddress string `json:"ip_address"`
+	IPAddress string `json:"ipAddress"`
 }
 
 type Volume struct {
