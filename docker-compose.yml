@@ -5,11 +5,10 @@ services:
     build: app
     container_name: revelations-app
     hostname: app
+    ports:
+      - "3000:3000"
     volumes:
       - ./app:/app
-    environment:
-      NODE_APP: revelations
-      NODE_ENV: development
     env_file:
       - .env
     networks:
@@ -19,6 +18,8 @@ services:
     build: middleware
     container_name: revelations-middleware
     hostname: api
+    ports:
+      - "5000:5000"
     volumes:
       - ./middleware:/api
       - ./data/files:/files
@@ -54,7 +55,7 @@ services:
     env_file:
       - .env.oauth
     ports:
-      - 8080:8080
+      - "8080:8080"
     depends_on:
       - postgres-oauth
     networks:

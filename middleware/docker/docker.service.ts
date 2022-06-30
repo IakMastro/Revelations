@@ -1,8 +1,8 @@
-import DockerDao from "./docker.dao";
-import { ListDockerDto } from "./list.docker.dto";
-import { RunDockerDto } from "./run.docker.dto";
-import { StopDockerDto } from "./stop.docker.dto";
-import { BuildDockerDto } from "./build.docker.dto";
+import DockerDao         from "./docker.dao";
+import { ListDockerDto } from "./dto/list.docker.dto";
+import { RunDockerDto }   from "./dto/run.docker.dto";
+import { StopDockerDto }  from "./dto/stop.docker.dto";
+import { BuildDockerDto } from "./dto/build.docker.dto";
 
 class DockerService {
   async build(resource: BuildDockerDto): Promise<string> {

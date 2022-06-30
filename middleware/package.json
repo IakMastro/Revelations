@@ -4,7 +4,7 @@
   "description": "",
   "main": "app.ts",
   "scripts": {
-    "serve": "tsc && node --unhandled-rejections=strict ./dist/app.js",
+    "serve": "nodemon app.ts",
     "debug": "export DEBUG=* && npm run serve",
     "test": "mocha -r ts-node/register 'test/**/*.test.ts' --unhandled-rejections=strict",
     "test-debug": "export DEBUG=* && npm run test"

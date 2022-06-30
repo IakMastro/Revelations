@@ -1,7 +1,7 @@
 import app from '../../app';
 import supertest from 'supertest';
-import { expect } from 'chai';
-import { RunDockerDto } from '../../docker/run.docker.dto';
+import { expect }       from 'chai';
+import { RunDockerDto } from '../../docker/dto/run.docker.dto';
 
 describe('Docker API', () => {
   let request: supertest.SuperAgentTest;

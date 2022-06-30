@@ -1,7 +1,7 @@
-import { ListDockerDto } from "./list.docker.dto";
-import { BuildDockerDto } from "./build.docker.dto";
-import { RunDockerDto } from "./run.docker.dto";
-import { StopDockerDto } from "./stop.docker.dto";
+import { ListDockerDto }  from "./dto/list.docker.dto";
+import { BuildDockerDto } from "./dto/build.docker.dto";
+import { RunDockerDto }  from "./dto/run.docker.dto";
+import { StopDockerDto } from "./dto/stop.docker.dto";
 
 import debug from 'debug';
 import axios from "axios";
