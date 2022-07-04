@@ -13,7 +13,7 @@ function App() {
           <Route path="/" element={<Home/>}/>
         </Routes>
       </Router>
-      <footer>
+      <footer style={{marginTop: "1rem"}}>
         <p>Coded with &#10084;&#65039; by IakMastro &copy; 2022</p>
       </footer>
     </div>

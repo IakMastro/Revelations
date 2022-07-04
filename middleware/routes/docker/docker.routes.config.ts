@@ -1,7 +1,7 @@
-import { CommonRoutesConfig } from "../common/common.routes.config";
-import DockerMiddleware from "./docker.middleware";
-import DockerController from "./docker.controller";
-import express from 'express';
+import { CommonRoutesConfig } from "../../common/common.routes.config";
+import DockerMiddleware       from "./docker.middleware";
+import DockerController       from "./docker.controller";
+import express                from 'express';
 
 export class DockerRoutes extends CommonRoutesConfig {
   constructor(app: express.Application) {
@@ -28,13 +28,7 @@ export class DockerRoutes extends CommonRoutesConfig {
       .post(
         DockerMiddleware.validateRequiredBuildFields,
         DockerController.build
-      )
-
-    this.app.route('/docker/files/upload')
-      .post(
-        DockerMiddleware.validateUploadedFile,
-        DockerController.uploadFile
-      )
+      );
 
     return this.app;
   }

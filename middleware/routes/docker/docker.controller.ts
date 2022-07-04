@@ -1,8 +1,6 @@
-import express from "express";
-
+import express       from "express";
 import dockerService from "./docker.service";
-
-import debug from 'debug';
+import debug         from 'debug';
 
 const log: debug.IDebugger = debug('app:docker-controller');
 
@@ -24,14 +22,6 @@ class DockerController {
 
   async stop(req: express.Request, res: express.Response) {
     let message = await dockerService.stop(req.body);
-    res.status(200).send(message);
-  }
-
-  async uploadFile(req: express.Request, res: express.Response) {
-    let file: any = req.files?.uploadedFile;
-    let path: string = `/files/${file.name}`;
-
-    let message = await dockerService.uploadFile(file, path);
     res.status(200).send(message);
   }
 }

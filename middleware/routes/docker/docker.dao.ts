@@ -1,7 +1,7 @@
 import { ListDockerDto }  from "./dto/list.docker.dto";
 import { BuildDockerDto } from "./dto/build.docker.dto";
-import { RunDockerDto }  from "./dto/run.docker.dto";
-import { StopDockerDto } from "./dto/stop.docker.dto";
+import { RunDockerDto }   from "./dto/run.docker.dto";
+import { StopDockerDto }  from "./dto/stop.docker.dto";
 
 import debug from 'debug';
 import axios from "axios";
@@ -33,15 +33,6 @@ class DockerDao {
   async stopContainer(container: StopDockerDto): Promise<string> {
     let response = await axios.post(`${this.api}/stop`, container);
     return response.data.message;
-  }
-
-  async uploadFile(file: any, path: string): Promise<string> {
-    file.mv(path, (err: Error) => {
-      if (err) {
-        return err;
-      }
-    })
-    return "File uploaded successfully";
   }
 }
 
