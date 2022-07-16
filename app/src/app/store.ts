@@ -1,8 +1,10 @@
 import {configureStore, ThunkAction, Action} from '@reduxjs/toolkit';
+import containerReducer                      from "../components/Home/containerSlice";
 
 export const store = configureStore(
   {
     reducer: {
+      containers: containerReducer
     },
   });
 
