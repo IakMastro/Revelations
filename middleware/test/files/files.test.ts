@@ -1,27 +1,22 @@
 import * as supertest from "supertest";
 import app            from "../../app";
-import {Done}         from "mocha";
-import {expect}       from "chai";
 import * as fs        from "fs";
-import {UploadedFile} from "express-fileupload";
 
 describe("Files Endpoints", () => {
   let request: supertest.SuperAgentTest;
 
-  before(() => {
+  beforeEach(() => {
     request = supertest.agent(app);
   });
-  after((done: Done) => {
-    app.close(() => {
-      done();
-    });
+  afterEach(() => {
+    app.close();
   });
 
   describe("When no files were given", () => {
     it("should return no files were uploaded", async () => {
       const res = await request.post('/files/upload');
-      expect(res.status).to.equal(400);
-      return expect(res.text).to.equal("No files were uploaded");
+      expect(res.status).toBe(400);
+      return expect(res.text).toBe("No files were uploaded");
     });
   });
 
@@ -31,20 +26,33 @@ describe("Files Endpoints", () => {
       const res = await request.post('/files/upload')
                                .field('Content-Type', 'multipart/form-data')
                                .attach('uploadedFile', file);
-      expect(res.status).to.equal(400);
-      return expect(res.text).to.equal("Missing required fields path");
+      expect(res.status).toBe(400);
+      return expect(res.text).toBe("Missing required fields path");
     });
   });
+
+  describe("When no fileName was given", () => {
+    it("should return missing required fields path", async () => {
+      let file: Buffer = fs.readFileSync("./test/files/test.txt");
+      const res = await request.post('/files/upload')
+                               .field('Content-Type', 'multipart/form-data')
+                               .field('path', 'test')
+                               .attach('uploadedFile', file);
+      expect(res.status).toBe(400);
+      return expect(res.text).toBe("Missing required fileName field");
+    });
+  })
 
   describe("When the required fields aren't missing", () => {
     it ('should upload a file', async () => {
       let file = fs.readFileSync("./test/files/test.txt");
       const res = await request.post('/files/upload')
                                .field('Content-Type', 'multipart/form-data')
-                               .field('path', 'test/test.txt')
-                               .attach('uploadedFile', file);
-      expect(res.status).to.equal(200);
-      return expect(res.text).to.equal("File uploaded successfully");
-    })
-  })
+                               .field('path', 'test')
+                               .field('fileName', 'test.txt')
+                               .attach('file', file);
+      expect(res.status).toBe(200);
+      return expect(res.text).toBe("File uploaded successfully");
+    });
+  });
 });

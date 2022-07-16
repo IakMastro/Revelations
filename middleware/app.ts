@@ -8,7 +8,8 @@ import fileUpload           from 'express-fileupload';
 import {CommonRoutesConfig} from './common/common.routes.config';
 import {DockerRoutes}       from './routes/docker/docker.routes.config';
 import debug                from 'debug';
-import {FilesRoutes}        from "./routes/files/files.routes.config";
+import {FilesRoutes}        from "./common/files/files.routes.config";
+import {DatasetsRoutes}     from "./routes/datasets/datasets.routes.config";
 
 const app: express.Application = express();
 const server: http.Server = http.createServer(app);
@@ -45,6 +46,7 @@ app.use(expressWinston.errorLogger(loggerOptions));
 
 routes.push(new DockerRoutes(app));
 routes.push(new FilesRoutes(app));
+routes.push(new DatasetsRoutes(app));
 
 const runningMessage: string = `Server running on port ${port}`;
 

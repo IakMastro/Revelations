@@ -16,6 +16,14 @@ class FilesMiddleware {
       next();
     }
   }
+
+  async validateRequiredFileName(req: express.Request, res: express.Response, next: express.NextFunction) {
+    if (!req.body.fileName) {
+      res.status(400).send('Missing required fileName field');
+    } else {
+      next();
+    }
+  }
 }
 
 export default new FilesMiddleware();

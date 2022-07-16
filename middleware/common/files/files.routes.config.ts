@@ -1,4 +1,4 @@
-import {CommonRoutesConfig} from "../../common/common.routes.config";
+import {CommonRoutesConfig} from "../common.routes.config";
 import express              from "express";
 import FilesController      from "./files.controller";
 import FilesMiddleware      from "./files.middleware";
@@ -13,6 +13,7 @@ export class FilesRoutes extends CommonRoutesConfig {
       .post(
         FilesMiddleware.validateUploadedFile,
         FilesMiddleware.validateRequiredPath,
+        FilesMiddleware.validateRequiredFileName,
         FilesController.uploadFile
       );
 
