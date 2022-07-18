@@ -1,15 +1,16 @@
-import axios                   from "axios";
-import {useQuery}              from "react-query";
-import {useSelector}           from "react-redux";
-import {RootState}             from "../../app/store";
-import {AgGridReact}           from "ag-grid-react";
+import axios                      from "axios";
+import {useQuery}                 from "react-query";
+import {useDispatch, useSelector} from "react-redux";
+import {RootState}                from "../../app/store";
+import {AgGridReact}              from "ag-grid-react";
+import {useRef}                   from "react";
+import {Button, Card, Spinner}      from "react-bootstrap";
+import Container, {Network, Volume} from "../../interfaces/Container";
 
 import './ContainersTable.scss';
 import 'ag-grid-community/styles/ag-grid.min.css';
 import 'ag-grid-community/styles/ag-theme-alpine.min.css'
-import {useRef}                from "react";
-import {Button, Card, Spinner} from "react-bootstrap";
-import Container               from "../../interfaces/Container";
+import {setCurrentContainer}      from "./containerSlice";
 
 async function getContainers(): Promise<any[]> {
   const response = await axios.get("http://localhost:5000/docker/list");
@@ -18,7 +19,8 @@ async function getContainers(): Promise<any[]> {
 
 export default function ContainersTable(): JSX.Element {
   const {isLoading, isError, error, refetch, data} = useQuery('getContainers', getContainers);
-  const {columnDefs} = useSelector((state: RootState) => state.containers)
+  const {columnDefs, currentContainer} = useSelector((state: RootState) => state.containers);
+  const dispatch = useDispatch();
 
   const gridRef: any = useRef();
 
@@ -36,7 +38,7 @@ export default function ContainersTable(): JSX.Element {
     if (data) {
       return data?.map((container: Container) => {
         return {
-          id: container.id.slice(0, 10).concat("..."),
+          id: container.id,
           names: container.names.map((name: string) => parseName(name)),
           ports: container.ports,
           state: container.state.replaceAll(/(^\w)|(\s+\w)/g, (match: string) => match.toUpperCase()),
@@ -50,103 +52,85 @@ export default function ContainersTable(): JSX.Element {
   }
 
   function seeContainerDetails(event: any) {
-    console.log(event.data);
+    console.log(event.data.volumes[0]);
+    dispatch(setCurrentContainer(event.data));
   }
 
   return (
     <Card style={{marginTop: ".5rem"}}>
       <Card.Header>Manage your containers</Card.Header>
       <Card.Body>
-        <Button style={{marginBottom: '.5rem'}} variant={"outline-primary"} onClick={() => refetch}>Refresh Table</Button>
-        <div style={{height: "14.5rem", width: "40rem"}}>
-          {isError && error instanceof Error &&
-              <span>Error: {error.message}</span>}
-          {isLoading &&
-             (<div>
-               <Spinner animation={"border"} role={"status"} size={"sm"}>
-                 <span className={"visually-hidden"}>Loading...</span>
-               </Spinner>
-               <span>Loading...</span>
-             </div>)}
-          <AgGridReact
-            ref={gridRef}
-            className={"ag-theme-alpine"}
-            rowData={parseContainers()}
-            columnDefs={columnDefs}
-            animateRows={true}
-            rowSelection={'multiple'}
-            onCellClicked={seeContainerDetails}
-          />
+        <div className={"row"}>
+          <div className={"col-sm-6"}>
+            <h5>Currently running containers</h5>
+            <div style={{height: "40rem", width: "40rem"}}>
+              {isError && error instanceof Error &&
+                  <span>Error: {error.message}</span>}
+              {isLoading &&
+                (<div>
+                  <Spinner animation={"border"} role={"status"} size={"sm"}>
+                    <span className={"visually-hidden"}>Loading...</span>
+                  </Spinner>
+                  <span>Loading...</span>
+                </div>)}
+              <AgGridReact
+                ref={gridRef}
+                className={"ag-theme-alpine"}
+                rowData={parseContainers()}
+                columnDefs={columnDefs}
+                animateRows={true}
+                rowSelection={'multiple'}
+                onCellClicked={seeContainerDetails}
+              />
+            </div>
+          </div>
+
+          <div style={{marginTop: "2rem"}} className={"col-sm-6"}>
+            {currentContainer && (
+              <Card>
+                <Card.Header>Selected container details</Card.Header>
+                <Card.Text>
+                  <div>
+                    <p><b>ID:</b> {currentContainer.id}</p>
+                    <b>Names:</b>
+                    <ul>
+                      {currentContainer.names.map((name: string) => {
+                        return <li>{name}</li>
+                      })}
+                    </ul>
+                    <b>Ports:</b>
+                    <ul>
+                      {currentContainer.ports.map((port: number) => {
+                        return <li>{port}</li>
+                      })}
+                    </ul>
+                    <p><b>State:</b> {currentContainer.state}</p>
+                    <p><b>Status:</b> {currentContainer.status}</p>
+                    <b>IP Addresses:</b>
+                    <ul>
+                      {currentContainer.networks.map((network: Network) => {
+                        return <li>{network.ipAddress}</li>
+                      })}
+                    </ul>
+                    <b>Volumes:</b>
+                    <ul>
+                      {currentContainer.volumes.map((volume: Volume) => {
+                        return <li>{volume.path}</li>
+                      })}
+                    </ul>
+                  </div>
+                </Card.Text>
+                <Card.Footer>
+                  <Button variant={"danger"}>Stop Container</Button>
+                </Card.Footer>
+              </Card>
+            )}
+            {!currentContainer &&
+                <h5>Please, select a container</h5>
+            }
+          </div>
         </div>
       </Card.Body>
     </Card>
   )
-
-  // return (
-  //   <div className={"containerTable"}>
-  //     <Card>
-  //       <Card.Header>Manage your containers</Card.Header>
-  //       <Card.Body>
-  //         <h3>Containers</h3>
-  //         <Table striped bordered hover>
-  //           <thead>
-  //           <tr>
-  //             <th>ID</th>
-  //             <th>Names</th>
-  //             <th>State</th>
-  //             <th colSpan={30}>Actions</th>
-  //           </tr>
-  //           </thead>
-  //           <tbody>
-  //           {isError && error instanceof Error && <tr>
-  //               <td>Error: {error.message}</td>
-  //           </tr>}
-  //           {
-  //             data && data.map((container: Container) => {
-  //               return (
-  //                 <tr key={container.id}>
-  //                   <td>{
-  //                     container.id
-  //                              .slice(0, 10)
-  //                              .concat("...")}
-  //                   </td>
-  //                   <td>{
-  //                     container.names
-  //                              .map(
-  //                                (name: string) =>
-  //                                  name
-  //                                    .replaceAll("\"", "")
-  //                                    .replaceAll("/", "")
-  //                                    .replaceAll("-", " ")
-  //                                    .replaceAll(/(^\w)|(\s+\w)/g, (match: string) =>
-  //                                      match.toUpperCase()
-  //                                    )
-  //                              )
-  //                   }</td>
-  //                   <td>{container.state
-  //                                 .replaceAll(/(^\w)|(\s+\w)/g, (match: string) =>
-  //                                   match.toUpperCase()
-  //                                 )
-  //                   }</td>
-  //                   <td>
-  //                     <Button style={{marginRight: ".5rem"}} variant={"outline-primary"}>Details</Button>
-  //                     <Button variant={"outline-danger"}>Stop</Button>
-  //                   </td>
-  //                 </tr>
-  //               );
-  //             })
-  //           }
-  //           {!data && !isLoading && !isError && <tr>No containers currently running</tr>}
-  //           </tbody>
-  //         </Table>
-  //         <Button variant={"outline-primary"} onClick={() => {
-  //           refetch();
-  //         }
-  //         }>
-  //           Refresh Table
-  //         </Button>
-  //       </Card.Body>
-  //     </Card>
-  //   </div>
-  // );
-}
+};

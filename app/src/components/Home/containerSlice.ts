@@ -4,6 +4,7 @@ import Container            from "../../interfaces/Container";
 
 export interface ContainerSlice {
   columnDefs: Object[];
+  currentContainer?: Container;
 }
 
 const initialState: ContainerSlice = {
@@ -26,6 +27,7 @@ const initialState: ContainerSlice = {
       filter: "true"
     }
   ],
+  currentContainer: undefined
 };
 
 export const containerSlice = createSlice(
@@ -33,8 +35,12 @@ export const containerSlice = createSlice(
     name: 'container',
     initialState,
     reducers: {
+      setCurrentContainer: (state, action: PayloadAction<Container>) => {
+        state.currentContainer = action.payload;
+      }
     }
   }
 );
 
 export default containerSlice.reducer;
+export const { setCurrentContainer } = containerSlice.actions;
