@@ -3,6 +3,7 @@ package routes
 import (
 	"context"
 	"docker-management-api/lib"
+	"fmt"
 	"net/http"
 	"time"
 
@@ -21,7 +22,9 @@ func imageBuild(dockerClient *client.Client, container *BuildContainer) error {
 	ctx, cancel := context.WithTimeout(context.Background(), 120*time.Second)
 	defer cancel()
 
-	tar, err := archive.TarWithOptions(container.Path, &archive.TarOptions{})
+	path := fmt.Sprintf("/files/%s", container.Path)
+	fmt.Println(path)
+	tar, err := archive.TarWithOptions(path, &archive.TarOptions{})
 	if err != nil {
 		return err
 	}

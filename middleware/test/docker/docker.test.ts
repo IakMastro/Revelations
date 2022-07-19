@@ -29,7 +29,7 @@ describe('Docker Endpoints', () => {
       const res = await request.post("/docker/build")
                                .send({
                                        name: "test",
-                                       path: "routes/temp"
+                                       path: "test"
                                      });
       expect(res.status).toBe(200);
       expect(res.text).toBe("Container was built successfully");
