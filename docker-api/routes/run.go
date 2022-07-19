@@ -3,6 +3,7 @@ package routes
 import (
 	"context"
 	"docker-management-api/lib"
+	"fmt"
 	"net/http"
 
 	"github.com/docker/docker/api/types"
@@ -22,6 +23,8 @@ func Run(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
+
+	fmt.Println(args)
 
 	ctx := context.Background()
 	cli := lib.InitDockerCli()

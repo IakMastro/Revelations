@@ -14,9 +14,9 @@ type StopContainer struct {
 }
 
 func Stop(c *gin.Context) {
-	var containers []StopContainer
+	var container StopContainer
 
-	if err := c.ShouldBindJSON(&containers); err != nil {
+	if err := c.ShouldBindJSON(&container); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
@@ -24,12 +24,10 @@ func Stop(c *gin.Context) {
 	ctx := context.Background()
 	cli := lib.InitDockerCli()
 
-	for _, container := range containers {
-		fmt.Print("Stopping container: ", container.ID[:10], "...")
-		if err := cli.ContainerStop(ctx, container.ID, nil); err != nil {
-			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
-		} else {
-			c.JSON(http.StatusOK, gin.H{"message": "Containers stopped"})
-		}
+	fmt.Print("Stopping container: ", container.ID[:10], "...")
+	if err := cli.ContainerStop(ctx, container.ID, nil); err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+	} else {
+		c.JSON(http.StatusOK, gin.H{"message": "Container stopped"})
 	}
 }

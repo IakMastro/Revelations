@@ -9,11 +9,11 @@ export interface ContainerSlice {
 
 const initialState: ContainerSlice = {
   columnDefs: [
-    {
-      headerName: "ID",
-      field: 'id',
-      filter: 'true'
-    },
+    // {
+    //   headerName: "ID",
+    //   field: 'id',
+    //   filter: 'true'
+    // },
     {
       headerName: "Names",
       field: 'names',
@@ -35,7 +35,7 @@ export const containerSlice = createSlice(
     name: 'container',
     initialState,
     reducers: {
-      setCurrentContainer: (state, action: PayloadAction<Container>) => {
+      setCurrentContainer: (state, action: PayloadAction<Container | undefined>) => {
         state.currentContainer = action.payload;
       }
     }

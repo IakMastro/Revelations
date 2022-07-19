@@ -1,24 +1,32 @@
 import axios                      from "axios";
-import {useQuery}                 from "react-query";
+import {useMutation, useQuery}    from "react-query";
 import {useDispatch, useSelector} from "react-redux";
-import {RootState}                from "../../app/store";
-import {AgGridReact}              from "ag-grid-react";
-import {useRef}                   from "react";
+import {RootState}                  from "../../app/store";
+import {AgGridReact}                from "ag-grid-react";
+import {useRef}                     from "react";
 import {Button, Card, Spinner}      from "react-bootstrap";
 import Container, {Network, Volume} from "../../interfaces/Container";
+import {setCurrentContainer}        from "./containerSlice";
 
 import './ContainersTable.scss';
 import 'ag-grid-community/styles/ag-grid.min.css';
 import 'ag-grid-community/styles/ag-theme-alpine.min.css'
-import {setCurrentContainer}      from "./containerSlice";
 
 async function getContainers(): Promise<any[]> {
   const response = await axios.get("http://localhost:5000/docker/list");
   return response.data;
 }
 
+async function stopContainer(containerId: string): Promise<any[]> {
+  const response = await axios.post("http://localhost:5000/docker/stop", {
+    id: containerId
+  });
+  return response.data;
+}
+
 export default function ContainersTable(): JSX.Element {
   const {isLoading, isError, error, refetch, data} = useQuery('getContainers', getContainers);
+  const stopContainerMutation = useMutation(stopContainer);
   const {columnDefs, currentContainer} = useSelector((state: RootState) => state.containers);
   const dispatch = useDispatch();
 
@@ -52,18 +60,24 @@ export default function ContainersTable(): JSX.Element {
   }
 
   function seeContainerDetails(event: any) {
-    console.log(event.data.volumes[0]);
     dispatch(setCurrentContainer(event.data));
+  }
+
+  function stopContainerButton(): void {
+    if (currentContainer) {
+      stopContainerMutation.mutate(currentContainer.id);
+      setCurrentContainer(undefined);
+    }
   }
 
   return (
     <Card style={{marginTop: ".5rem"}}>
-      <Card.Header>Manage your containers</Card.Header>
+      <Card.Header>Manage your machines</Card.Header>
       <Card.Body>
         <div className={"row"}>
-          <div className={"col-sm-6"}>
-            <h5>Currently running containers</h5>
-            <div style={{height: "40rem", width: "40rem"}}>
+          <div className={"col-sm-4"}>
+            <h5>Currently running machines</h5>
+            <div style={{height: "40rem", width: "25rem"}}>
               {isError && error instanceof Error &&
                   <span>Error: {error.message}</span>}
               {isLoading &&
@@ -85,13 +99,12 @@ export default function ContainersTable(): JSX.Element {
             </div>
           </div>
 
-          <div style={{marginTop: "2rem"}} className={"col-sm-6"}>
+          <div style={{marginTop: "2rem"}} className={"col-sm-8"}>
             {currentContainer && (
               <Card>
-                <Card.Header>Selected container details</Card.Header>
+                <Card.Header>Selected machine details</Card.Header>
                 <Card.Text>
-                  <div>
-                    <p><b>ID:</b> {currentContainer.id}</p>
+                  <div style={{marginTop: '.5rem', marginLeft: '.5rem'}}>
                     <b>Names:</b>
                     <ul>
                       {currentContainer.names.map((name: string) => {
@@ -104,7 +117,6 @@ export default function ContainersTable(): JSX.Element {
                         return <li>{port}</li>
                       })}
                     </ul>
-                    <p><b>State:</b> {currentContainer.state}</p>
                     <p><b>Status:</b> {currentContainer.status}</p>
                     <b>IP Addresses:</b>
                     <ul>
@@ -121,12 +133,12 @@ export default function ContainersTable(): JSX.Element {
                   </div>
                 </Card.Text>
                 <Card.Footer>
-                  <Button variant={"danger"}>Stop Container</Button>
+                  <Button onClick={stopContainerButton} variant={"danger"}>Stop Machine</Button>
                 </Card.Footer>
               </Card>
             )}
             {!currentContainer &&
-                <h5>Please, select a container</h5>
+                <h5>Please, select a machine</h5>
             }
           </div>
         </div>

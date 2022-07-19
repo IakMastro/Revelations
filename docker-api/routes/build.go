@@ -57,6 +57,7 @@ func Build(c *gin.Context) {
 	err := imageBuild(lib.InitDockerCli(), &container)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
 	}
 
 	c.JSON(http.StatusOK, gin.H{"message": "Container was built successfully"})
