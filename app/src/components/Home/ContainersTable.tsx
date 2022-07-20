@@ -1,6 +1,6 @@
-import axios                      from "axios";
-import {useMutation, useQuery}    from "react-query";
-import {useDispatch, useSelector} from "react-redux";
+import axios                        from "axios";
+import {useMutation, useQuery}      from "react-query";
+import {useDispatch, useSelector}   from "react-redux";
 import {RootState}                  from "../../app/store";
 import {AgGridReact}                from "ag-grid-react";
 import {useRef}                     from "react";
@@ -25,7 +25,7 @@ async function stopContainer(containerId: string): Promise<any[]> {
 }
 
 export default function ContainersTable(): JSX.Element {
-  const {isLoading, isError, error, refetch, data} = useQuery('getContainers', getContainers);
+  const {isLoading, isError, error, data} = useQuery('getContainers', getContainers);
   const stopContainerMutation = useMutation(stopContainer);
   const {columnDefs, currentContainer} = useSelector((state: RootState) => state.containers);
   const dispatch = useDispatch();
@@ -93,7 +93,7 @@ export default function ContainersTable(): JSX.Element {
                 rowData={parseContainers()}
                 columnDefs={columnDefs}
                 animateRows={true}
-                rowSelection={'multiple'}
+                rowSelection={'single'}
                 onCellClicked={seeContainerDetails}
               />
             </div>
@@ -124,12 +124,16 @@ export default function ContainersTable(): JSX.Element {
                         return <li>{network.ipAddress}</li>
                       })}
                     </ul>
-                    <b>Volumes:</b>
-                    <ul>
-                      {currentContainer.volumes.map((volume: Volume) => {
-                        return <li>{volume.path}</li>
-                      })}
-                    </ul>
+                    {currentContainer.volumes != null && (
+                      <div>
+                        <b>Volumes:</b>
+                        <ul>
+                          {currentContainer.volumes.map((volume: Volume) => {
+                            return <li>{volume.path}</li>
+                          })}
+                        </ul>
+                      </div>
+                    )}
                   </div>
                 </Card.Text>
                 <Card.Footer>

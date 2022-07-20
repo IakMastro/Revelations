@@ -10,6 +10,11 @@ class DockerController {
     res.status(200).send(containers);
   }
 
+  async listImages(req: express.Request, res: express.Response) {
+    let images = await dockerService.images();
+    res.status(200).send(images);
+  }
+
   async runContainer(req: express.Request, res: express.Response) {
     let id = await dockerService.run(req.body);
     res.status(200).send(id);

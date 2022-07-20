@@ -3,10 +3,15 @@ import { ListDockerDto }  from "./dto/list.docker.dto";
 import { RunDockerDto }   from "./dto/run.docker.dto";
 import { StopDockerDto }  from "./dto/stop.docker.dto";
 import { BuildDockerDto } from "./dto/build.docker.dto";
+import {Image}            from "./dto/list.images.dto";
 
 class DockerService {
   async build(resource: BuildDockerDto): Promise<string> {
     return await DockerDao.createContainer(resource);
+  }
+
+  async images(): Promise<Image[]> {
+    return await DockerDao.getImages();
   }
 
   async run(resource: RunDockerDto): Promise<string> {

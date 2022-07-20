@@ -3,8 +3,9 @@ import { BuildDockerDto } from "./dto/build.docker.dto";
 import { RunDockerDto }   from "./dto/run.docker.dto";
 import { StopDockerDto }  from "./dto/stop.docker.dto";
 
-import debug from 'debug';
-import axios from "axios";
+import debug   from 'debug';
+import axios   from "axios";
+import {Image} from "./dto/list.images.dto";
 
 const log: debug.IDebugger = debug('app:in-memory-dao');
 
@@ -18,6 +19,17 @@ class DockerDao {
   async createContainer(container: BuildDockerDto): Promise<string> {
     let response = await axios.post(`${this.api}/build`, container);
     return await response.data.message;
+  }
+
+  async getImages(): Promise<Image[]> {
+    let response = await axios.get(`${this.api}/images`);
+    let images = response.data.map((image: any) => {
+      return {
+        id: image.Id,
+        tags: image.RepoTags
+      }
+    });
+    return await images;
   }
 
   async runContainer(container: RunDockerDto): Promise<string> {

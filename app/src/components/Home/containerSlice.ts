@@ -9,11 +9,6 @@ export interface ContainerSlice {
 
 const initialState: ContainerSlice = {
   columnDefs: [
-    // {
-    //   headerName: "ID",
-    //   field: 'id',
-    //   filter: 'true'
-    // },
     {
       headerName: "Names",
       field: 'names',

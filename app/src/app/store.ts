@@ -1,10 +1,12 @@
 import {configureStore, ThunkAction, Action} from '@reduxjs/toolkit';
 import containerReducer                      from "../components/Home/containerSlice";
+import imageReducer                          from "../components/Images/imageSlice";
 
 export const store = configureStore(
   {
     reducer: {
-      containers: containerReducer
+      containers: containerReducer,
+      images: imageReducer
     },
   });
 
