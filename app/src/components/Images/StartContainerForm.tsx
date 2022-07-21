@@ -7,7 +7,7 @@ import Image                          from "../../interfaces/Image";
 
 type ContainerFormValues = {
   name: string;
-  tag: string
+  tag: string;
 }
 
 interface StartContainerFormProps {
@@ -26,7 +26,6 @@ export default function StartContainerForm({ image }: StartContainerFormProps): 
   const onSubmit: SubmitHandler<ContainerFormValues> = container => {
     if (container.tag) {
       container.name = image.tags[0];
-      console.log(container);
       startContainerMutation.mutate(container);
     }
   };
