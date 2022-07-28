@@ -28,6 +28,14 @@ class DockerMiddleware {
       next();
     }
   }
+
+  async validateRequiredFileFields(req: express.Request, res: express.Response, next: express.NextFunction) {
+    if (!req.body.language || !req.body.code || !req.body.dataset) {
+      res.status(400).send("Missing required field(s): language, code and/or dataset");
+    } else {
+      next();
+    }
+  }
 }
 
 export default new DockerMiddleware();

@@ -29,6 +29,11 @@ class DockerController {
     let message = await dockerService.stop(req.body);
     res.status(200).send(message);
   }
+
+  async saveFiles(req: express.Request, res: express.Response) {
+    await dockerService.saveFiles(req.body.language, req.body.code, req.body.dataset);
+    res.status(200).send("Files saved");
+  }
 }
 
 export default new DockerController();

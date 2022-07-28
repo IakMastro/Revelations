@@ -29,7 +29,11 @@ export const buildImageSlice = createSlice(
 
         switch (state.language) {
           case 'py':
-            state.code = '# Write your endpoints here. Use ${mongoConnection}.${dataset.name} to access the database'
+            state.code = `@lru_cache(2000)
+@app.get("/")
+async def default():
+  return {"message": "It's morbin time"}
+            `;
             break;
         }
       })

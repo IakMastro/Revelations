@@ -1,9 +1,9 @@
-import axios                   from "axios";
+import axios                      from "axios";
 import {useMutation, useQuery}    from "react-query";
 import Image                      from "../../interfaces/Image";
 import {useDispatch, useSelector} from "react-redux";
 import {RootState}                from "../../app/store";
-import {Button, Card, Spinner}    from "react-bootstrap";
+import {Card, Spinner}            from "react-bootstrap";
 import {AgGridReact}              from "ag-grid-react";
 import {useRef}                   from "react";
 
@@ -68,7 +68,7 @@ export default function ImagesTable(): JSX.Element {
                   })}
                 </ul>
 
-                <StartContainerForm image={currentImage} />
+                <StartContainerForm image={currentImage}/>
               </div>
             </Card.Text>
           </Card>

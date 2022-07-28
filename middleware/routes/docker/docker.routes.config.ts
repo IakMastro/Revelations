@@ -31,7 +31,11 @@ export class DockerRoutes extends CommonRoutesConfig {
         .post(
           DockerMiddleware.validateRequiredBuildFields,
           DockerController.build
-        );
+        )
+      .put(
+        DockerMiddleware.validateRequiredFileFields,
+        DockerController.saveFiles
+      );
 
     return this.app;
   }
