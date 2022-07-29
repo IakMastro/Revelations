@@ -67,7 +67,7 @@ dataset = datasets.find_one({"dataset": "${dataset.name}"})
 app = FastAPI()
 
 # User's endpoints should start from here
-`.concat(code)
+`.concat(code).concat("\n")
           }
         );
 

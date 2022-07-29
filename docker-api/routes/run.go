@@ -8,6 +8,8 @@ import (
 
 	"github.com/docker/docker/api/types"
 	"github.com/docker/docker/api/types/container"
+	"github.com/docker/docker/api/types/network"
+	"github.com/docker/go-connections/nat"
 	"github.com/gin-gonic/gin"
 )
 
@@ -29,15 +31,42 @@ func Run(c *gin.Context) {
 	ctx := context.Background()
 	cli := lib.InitDockerCli()
 
-	resp, err := cli.ContainerCreate(ctx, &container.Config{
-		Image: args.Name,
-	}, nil, nil, nil, args.Tag)
+	resp, err := cli.ContainerCreate(
+		ctx,
+		&container.Config{
+			Image: args.Name,
+			ExposedPorts: nat.PortSet{nat.Port("8000/tcp"): {}},
+		},
+		&container.HostConfig{
+			PortBindings: nat.PortMap{
+				"8000": []nat.PortBinding{
+					{
+						HostIP: "0.0.0.0",
+					},
+				},
+			},
+			Resources: container.Resources{
+				Memory:     1024 * 1000000,
+			},
+		},
+		nil,
+		nil,
+		args.Tag,
+	)
+
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		panic(err)
 	}
 
 	if err := cli.ContainerStart(ctx, resp.ID, types.ContainerStartOptions{}); err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		panic(err)
+	}
+
+	err = cli.NetworkConnect(ctx, "98dff6e1d6f2e8826858f480bb2a9f71bc10aeabc3437dd283d7b085981fbad5", resp.ID, &network.EndpointSettings{})
+
+	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		panic(err)
 	}

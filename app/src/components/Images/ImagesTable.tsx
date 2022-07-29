@@ -1,5 +1,5 @@
 import axios                      from "axios";
-import {useMutation, useQuery}    from "react-query";
+import {useQuery}                 from "react-query";
 import Image                      from "../../interfaces/Image";
 import {useDispatch, useSelector} from "react-redux";
 import {RootState}                from "../../app/store";
