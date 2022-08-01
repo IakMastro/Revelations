@@ -17,8 +17,10 @@ function App() {
           <Route path="/images/build" element={<BuildImage />}/>
         </Routes>
       </Router>
-      <footer style={{marginTop: "1rem"}}>
-        <p>Coded with &#10084;&#65039; by IakMastro &copy; 2022</p>
+      <footer className={"bg-gray-900 text-white"}>
+        <div className={"text-center p-4"} style={{backgroundColor: "rgba(0, 0, 0, .2"}}>
+          <span className={"text-whitehite"}>Coded with &#10084;&#65039; by IakMastro &copy; 2022</span>
+        </div>
       </footer>
     </div>
   );

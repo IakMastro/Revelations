@@ -1,13 +1,15 @@
 import React             from "react";
-import {Card, Container} from "react-bootstrap";
 import BuildImageForm    from "../../components/Images/BuildImageForm";
 
 class BuildImage extends React.Component {
   render() {
     return (
-      <Container>
-        <BuildImageForm />
-      </Container>
+      <div className={"p-6"}>
+        <h4 className={"text-gray-900 text-2xl font-medium mb-2 my-2"}>
+          Make your own machine
+        </h4>
+        <BuildImageForm/>
+      </div>
     )
   }
 }
