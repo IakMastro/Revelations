@@ -12,3 +12,4 @@
 * Start working with the presentation.
 * Find a cool dataset to use for a Proof of Concept. Work with somebody to help you in this part!
 * Ask your professors for feedback!
+* Uninstall bootstrap and popperjs. (forgot to do so)
