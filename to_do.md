@@ -5,6 +5,7 @@
   API calls should also happen in a different file as well.
 * Add dynamic URLs through the use of a dotenv file.
 * Add Ansible to this project.
+* Optimise all the Dockerfiles for production. Create a proxy server.
 * Write a how-to manual for users
 * Write a small adoc file explaining how to configure the oauth server for this project.
 * Finish the write-up, make more diagrams to export them as images for the final version and find free pictures on
