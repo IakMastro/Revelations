@@ -9,6 +9,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+// ListContainer is a type that includes the component of a container that is currently running.
 type ListContainer struct {
 	ID       string    `json:"id"`
 	Names    []string  `json:"names"`
@@ -19,24 +20,29 @@ type ListContainer struct {
 	Volumes  []Volume  `json:"volumes"`
 }
 
+// Network is a type that lists the info about the IP Address a container has.
 type Network struct {
 	ID        string `json:"id"`
 	IPAddress string `json:"ipAddress"`
 }
 
+// Volume is a type that lists the info about the paths from the hosted machine that are mounted on the container.
 type Volume struct {
 	Name string `json:"name"`
 	Path string `json:"path"`
 }
 
+// List is a function that simulates the docker ps unix command.
 func List(c *gin.Context) {
 	cli := lib.InitDockerCli()
 
+	// Function that returns the currently running containers.
 	containers, err := cli.ContainerList(context.Background(), types.ContainerListOptions{})
 	if err != nil {
 		panic(err)
 	}
 
+	// Parse data and keep only the useful information
 	var containersList []ListContainer
 	for _, container := range containers {
 		var ports []uint16

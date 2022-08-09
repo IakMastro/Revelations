@@ -9,6 +9,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+// ImageList function returns the images that are built on the Docker engine
 func ImageList(c *gin.Context) {
 	cli := lib.InitDockerCli()
 	images, err := cli.ImageList(context.Background(), types.ImageListOptions{})

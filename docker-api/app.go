@@ -6,6 +6,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+// Main function in which the routes are configured.
 func main() {
 	router := gin.Default()
 	router.GET("/list", routes.List)

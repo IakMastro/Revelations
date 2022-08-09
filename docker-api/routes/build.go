@@ -13,17 +13,23 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-type BuildContainer struct {
+// BuildImage is a type that includes the two neccessary components to build a new Image.
+// Those two components are the name of the image and the path in the local file system.
+// The files are saved by the Middleware API on a common mounted path
+type BuildImage struct {
 	Name string `json:"name"`
 	Path string `json:"path"`
 }
 
-func imageBuild(dockerClient *client.Client, container *BuildContainer) error {
+// imageBuildFunction is a private method that build the image.
+// If something will go wrong, it returns the error, otherwise it returns nill.
+func imageBuildFunction(dockerClient *client.Client, imageBuild *BuildImage) error {
+	// Create the background context
 	ctx, cancel := context.WithTimeout(context.Background(), 120*time.Second)
 	defer cancel()
 
-	path := fmt.Sprintf("/files/%s", container.Path)
-	fmt.Println(path)
+	// Create the path and then compress it to tar
+	path := fmt.Sprintf("/files/%s", imageBuild.Path)
 	tar, err := archive.TarWithOptions(path, &archive.TarOptions{})
 	if err != nil {
 		return err
@@ -31,7 +37,7 @@ func imageBuild(dockerClient *client.Client, container *BuildContainer) error {
 
 	opts := types.ImageBuildOptions{
 		Dockerfile: "Dockerfile",
-		Tags:       []string{container.Name},
+		Tags:       []string{imageBuild.Name},
 		Remove:     true,
 	}
 	res, err := dockerClient.ImageBuild(ctx, tar, opts)
@@ -49,19 +55,20 @@ func imageBuild(dockerClient *client.Client, container *BuildContainer) error {
 	return nil
 }
 
+// Build function is a public class that calls the imageBuildFunction and returns a message to the API.
 func Build(c *gin.Context) {
-	var container BuildContainer
+	var imageBuild BuildImage
 
-	if err := c.ShouldBindJSON(&container); err != nil {
+	if err := c.ShouldBindJSON(&imageBuild); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
-	err := imageBuild(lib.InitDockerCli(), &container)
+	err := imageBuildFunction(lib.InitDockerCli(), &imageBuild)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{"message": "Container was built successfully"})
+	c.JSON(http.StatusOK, gin.H{"message": "Image was built successfully"})
 }

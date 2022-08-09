@@ -9,6 +9,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+// Function that prints the logs of a container.
 func Logs(c *gin.Context) {
 	ctx := context.Background()
 	cli := lib.InitDockerCli()

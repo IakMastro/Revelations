@@ -3,6 +3,10 @@ import DockerMiddleware     from "./docker.middleware";
 import DockerController     from "./docker.controller";
 import express              from 'express';
 
+/**
+ * @class
+ * @classdesc The Routes Configuration class for the Docker route
+ */
 export class DockerRoutes extends CommonRoutesConfig {
   constructor(app: express.Application) {
     super(app, "DockerRoutes");

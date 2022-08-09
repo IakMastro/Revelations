@@ -5,14 +5,16 @@ import pandas as pd
 from flask import Flask, jsonify, request
 from flask_cors import CORS, cross_origin
 
-DEBUG = True
+# Debug flag, currently set to true
+DEBUG: bool = True
 
+# Flack documentation
 app = Flask(__name__)
 app.config.from_object(__name__)
 
 CORS(app, resources={r"/*": {"origins": "*"}})
 
-def check_extention(file_name):
+def check_extention(file_name: str) -> str:
   if re.search(r'\.csv$', file_name):
     return 'csv'
 
@@ -21,7 +23,6 @@ def check_extention(file_name):
 
   elif re.search(r'\.json$', file_name):
     return 'json'
-
 
 @app.route("/", methods=["POST"])
 @cross_origin()

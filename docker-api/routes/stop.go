@@ -9,10 +9,13 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+// StopContainer is a type that stops the container.
+// The only field it has is the ID of the currently running container.
 type StopContainer struct {
 	ID string `json:"id"`
 }
 
+// Stop is a function that stops a running container.
 func Stop(c *gin.Context) {
 	var container StopContainer
 

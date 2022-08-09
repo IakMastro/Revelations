@@ -4,6 +4,10 @@ import DatasetsController   from "./datasets.controller";
 import DatasetMiddleware    from "./datasets.middleware";
 import DatasetsMiddleware   from "./datasets.middleware";
 
+/**
+ * @class
+ * @classdesc The Routes Configuration class for Datasets route
+ */
 export class DatasetsRoutes extends CommonRoutesConfig {
   constructor(app: express.Application) {
     super(app, "DatasetRoutes");

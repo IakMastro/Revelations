@@ -3,6 +3,10 @@ import express              from "express";
 import FilesController      from "./files.controller";
 import FilesMiddleware      from "./files.middleware";
 
+/**
+ * @class
+ * @classdesc The Routes Configuration class for Files route
+ */
 export class FilesRoutes extends CommonRoutesConfig {
   constructor(app: express.Application) {
     super(app, "FilesRoutes");
