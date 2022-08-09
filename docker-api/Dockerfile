@@ -1,11 +1,13 @@
-FROM docker:20.10.17-dind
+FROM golang:alpine as build 
+WORKDIR /build
+COPY go.mod go.sum ./
+RUN go mod download
+COPY .  .  
+RUN CGO_ENABLED=0 GOOS=linux go build -a -o docker-api .
 
+FROM docker:20.10.17-alpine3.16
 WORKDIR /api
-ENV GOPATH /go
-
-COPY . .
-
-RUN apk add go && go get .
-
+COPY --from=build /build .
 EXPOSE 8080
-CMD ["go", "run", "."]
+ENTRYPOINT [ "./docker-api" ]
+CMD [ "3", "300" ]
