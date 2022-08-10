@@ -10,6 +10,5 @@
 * Finish the write-up, make more diagrams to export them as images for the final version and find free pictures on
   the web.
 * Continue the work on the presentation.
-* Find a cool dataset to use for a Proof of Concept. Work with somebody to help you in this part!
 * Ask your professors for feedback!
 * Uninstall bootstrap and popperjs. (forgot to do so)
