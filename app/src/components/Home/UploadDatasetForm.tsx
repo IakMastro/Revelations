@@ -3,40 +3,13 @@ import {useForm, SubmitHandler}       from "react-hook-form";
 import {Alert, Button, Form, Spinner} from "react-bootstrap";
 import axios                          from "axios";
 import {useMutation}                  from "react-query";
+import {uploadDataset}                from "../../services/datasets.service";
+import {uploadDatasetFile}            from "../../services/files.service";
 
 type DatasetFormValues = {
   name: string;
   description: string;
   file: any;
-}
-
-async function uploadDatasetFile(formData: FormData): Promise<any> {
-  try {
-    const response = await axios.post(
-      "http://localhost:5000/files/upload",
-      formData,
-      {headers: {'Content-Type': 'multipart/form-data'}}
-    );
-    return response.data;
-  } catch (error: any) {
-    throw error.response.data;
-  }
-}
-
-async function uploadDataset(dataset: DatasetFormValues): Promise<any> {
-  try {
-    const response = await axios.post(
-      "http://localhost:5000/datasets",
-      {
-        name: dataset.name,
-        description: dataset.description,
-        path: dataset.file[0].name
-      }
-    );
-    return response.data;
-  } catch (error: any) {
-    throw error.response.data;
-  }
 }
 
 export default function UploadDatasetForm(): JSX.Element {

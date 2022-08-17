@@ -1,4 +1,3 @@
-import axios                      from "axios";
 import {useQuery}                 from "react-query";
 import Image                      from "../../interfaces/Image";
 import {useDispatch, useSelector} from "react-redux";
@@ -9,11 +8,7 @@ import 'ag-grid-community/styles/ag-grid.min.css';
 import 'ag-grid-community/styles/ag-theme-alpine.min.css'
 import {setCurrentImage}          from "./imageSlice";
 import StartContainerForm         from "./StartContainerForm";
-
-async function getImages(): Promise<Image[]> {
-  const response = await axios.get("http://localhost:5000/docker/images");
-  return await response.data;
-}
+import {getImages}                from "../../services/images.service";
 
 export default function ImagesTable(): JSX.Element {
   const {isLoading, isError, error, data} = useQuery('getImages', getImages);

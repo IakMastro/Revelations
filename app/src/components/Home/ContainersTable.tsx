@@ -11,18 +11,7 @@ import {setCurrentContainer}        from "./containerSlice";
 import './ContainersTable.scss';
 import 'ag-grid-community/styles/ag-grid.min.css';
 import 'ag-grid-community/styles/ag-theme-alpine.min.css'
-
-async function getContainers(): Promise<any[]> {
-  const response = await axios.get("http://localhost:5000/docker/list");
-  return response.data;
-}
-
-async function stopContainer(containerId: string): Promise<any[]> {
-  const response = await axios.post("http://localhost:5000/docker/stop", {
-    id: containerId
-  });
-  return response.data;
-}
+import {getContainers, stopContainer} from "../../services/container.service";
 
 export default function ContainersTable(): JSX.Element {
   const {isLoading, isError, error, data} = useQuery('getContainers', getContainers);

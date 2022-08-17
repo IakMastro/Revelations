@@ -3,9 +3,7 @@ package routes
 import (
 	"context"
 	"docker-management-api/lib"
-	"fmt"
 	"net/http"
-
 	"github.com/docker/docker/api/types"
 	"github.com/docker/docker/api/types/container"
 	"github.com/docker/docker/api/types/network"

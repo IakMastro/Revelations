@@ -1,8 +1,9 @@
-import axios                          from "axios";
-import {useMutation}                  from "react-query";
-import {SubmitHandler, useForm}       from "react-hook-form";
-import React                          from "react";
-import Image                          from "../../interfaces/Image";
+import axios                    from "axios";
+import {useMutation}            from "react-query";
+import {SubmitHandler, useForm} from "react-hook-form";
+import React                    from "react";
+import Image                    from "../../interfaces/Image";
+import {startContainer}         from "../../services/start.container.service";
 
 type ContainerFormValues = {
   name: string;
@@ -11,11 +12,6 @@ type ContainerFormValues = {
 
 interface StartContainerFormProps {
   image: Image;
-}
-
-async function startContainer(container: ContainerFormValues): Promise<any[]> {
-  const response = await axios.post("http://localhost:5000/docker/run", container);
-  return response.data;
 }
 
 export default function StartContainerForm({image}: StartContainerFormProps): JSX.Element {
