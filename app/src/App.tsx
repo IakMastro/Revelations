@@ -7,6 +7,8 @@ import Header                                   from "./components/Header";
 import BuildImage                               from "./pages/Images/BuildImage";
 
 function App() {
+  let year = new Date(Date.now()).getFullYear();
+
   return (
     <div>
       <Header />
@@ -17,9 +19,11 @@ function App() {
           <Route path="/images/build" element={<BuildImage />}/>
         </Routes>
       </Router>
-      <footer className={"bg-gray-900 text-white"}>
-        <div className={"text-center p-4"} style={{backgroundColor: "rgba(0, 0, 0, .2"}}>
-          <span className={"text-whitehite"}>Coded with &#10084;&#65039; by IakMastro &copy; 2022</span>
+      <footer className={"bg-emerald-900 text-white"}>
+        <div className={"text-center p-4"}>
+          <p className={"text-whitehite"}>
+            Coded with &#10084;&#65039; by IakMastro &copy; <span>{year}</span>
+          </p>
         </div>
       </footer>
     </div>

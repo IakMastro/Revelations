@@ -1,21 +1,18 @@
-import axios                        from "axios";
-import {useMutation, useQuery}      from "react-query";
-import {useDispatch, useSelector}   from "react-redux";
-import {RootState}                  from "../../app/store";
-import {AgGridReact}                from "ag-grid-react";
-import React, {useRef}              from "react";
-import {Button, Card, Spinner}      from "react-bootstrap";
-import Container, {Network, Volume} from "../../interfaces/Container";
-import {setCurrentContainer}        from "./containerSlice";
+import {useQuery}                 from "react-query";
+import {useDispatch, useSelector} from "react-redux";
+import {RootState}                from "../../app/store";
+import React                      from "react";
+import Container                  from "../../interfaces/Container";
+import {setCurrentContainer}      from "./containerSlice";
+import {getContainers}            from "../../services/container.service";
+import ContainerDetails           from "./ContainerDetails";
 
 import './ContainersTable.scss';
 import 'ag-grid-community/styles/ag-grid.min.css';
 import 'ag-grid-community/styles/ag-theme-alpine.min.css'
-import {getContainers, stopContainer} from "../../services/container.service";
 
 export default function ContainersTable(): JSX.Element {
   const {isLoading, isError, error, data} = useQuery('getContainers', getContainers);
-  const stopContainerMutation = useMutation(stopContainer);
   const {currentContainer} = useSelector((state: RootState) => state.containers);
   const dispatch = useDispatch();
 
@@ -75,7 +72,7 @@ export default function ContainersTable(): JSX.Element {
               <div className={"py-4 inline-block min-w-full sm:px-6 lg:px-8"}>
                 <div className={"overflow-hidden"}>
                   <table className={"min-w-full text-center"}>
-                    <thead className={"border-b bg-gray-800"}>
+                    <thead className={"border-b bg-emerald-800"}>
                     <tr>
                       <th scope={"col"} className={"text-sm font-medium text-white px-6 py-4"}>
                         Names
@@ -124,72 +121,8 @@ export default function ContainersTable(): JSX.Element {
             <h5>Please select a machine</h5>
           )}
           {currentContainer && (
-            <div>
-              <h5 className={"text-gray-900 text-xl font-medium mb-2"}>
-                Selected machine details
-              </h5>
-              <div className={"py-6"}>
-                <h5 className={"text-gray-900 text-xl font-medium mb-2 mx-1"}>
-                  ID: {currentContainer.id}
-                </h5>
-                <h5 className={"text-gray-900 text-xl font-medium mb-2 mx-1"}>
-                  Names:
-                </h5>
-                <ul className={"bg-white rounded-lg border border-gray-200 w-96 text-gray-900"}>
-                  {currentContainer.names.map((name: string) => {
-                    return <li className={"px-6 py-2 border-b border-gray-200 w-full rounded-t-lg"}>
-                      {name}
-                    </li>
-                  })}
-                </ul>
-                <h5 className={"text-gray-900 text-xl font-medium mb-2 mx-1"}>
-                  Ports:
-                </h5>
-                <ul className={"bg-white rounded-lg border border-gray-200 w-96 text-gray-900"}>
-                  {currentContainer.ports.map((ports: number) => {
-                    return <li className={"px-6 py-2 border-b border-gray-200 w-full rounded-t-lg"}>
-                      {ports}
-                    </li>
-                  })}
-                </ul>
-                <h5 className={"text-gray-900 text-xl font-medium mb-2 mx-1"}>
-                  IP Addresses:
-                </h5>
-                <ul className={"bg-white rounded-lg border border-gray-200 w-96 text-gray-900"}>
-                  {currentContainer.networks.map((network: Network) => {
-                    return <li className={"px-6 py-2 border-b border-gray-200 w-full rounded-t-lg"}>
-                      {network.ipAddress}
-                    </li>
-                  })}
-                </ul>
-                {currentContainer.volumes && (
-                  <>
-                    <h5 className={"text-gray-900 text-xl font-medium mb-2 mx-1"}>
-                      Volumes:
-                    </h5>
-                    <ul className={"bg-white rounded-lg border border-gray-200 w-96 text-gray-900"}>
-                      {currentContainer.volumes.map((volume: Volume) => {
-                        return <li className={"px-6 py-2 border-b border-gray-200 w-full rounded-t-lg"}>
-                          {volume.path}
-                        </li>
-                      })}
-                    </ul>
-                  </>
-                )}
-
-                <button
-                  className={"inline-flex items-center justify-center h-10 gap-2 px-5 text-sm" +
-                    " font-medium tracking-wide text-white transition duration-300 rounded whitespace-nowrap" +
-                    " bg-red-500 ring-offset-2 hover:bg-red-600 focus:bg-emerald-600 focus:ring-2 " +
-                    "focus:ring-red-300 disabled:cursor-not-allowed disabled:border-red-300 " +
-                    "disabled:bg-red-300 disabled:shadow-none mx-2"}
-                  onClick={() => stopContainerMutation.mutate(currentContainer.id)}
-                >
-                  <span>Stop container</span>
-                </button>
-              </div>
-            </div>
-            )}
+            <ContainerDetails container={currentContainer}/>
+          )}
         </div>
       </div>
     </div>

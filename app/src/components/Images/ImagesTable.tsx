@@ -9,6 +9,7 @@ import 'ag-grid-community/styles/ag-theme-alpine.min.css'
 import {setCurrentImage}          from "./imageSlice";
 import StartContainerForm         from "./StartContainerForm";
 import {getImages}                from "../../services/images.service";
+import ImageDetails               from "./ImageDetails";
 
 export default function ImagesTable(): JSX.Element {
   const {isLoading, isError, error, data} = useQuery('getImages', getImages);
@@ -45,7 +46,7 @@ export default function ImagesTable(): JSX.Element {
               <div className={"py-4 inline-block min-w-full sm:px-6 lg:px-8"}>
                 <div className={"overflow-hidden"}>
                   <table className={"min-w-full text-center"}>
-                    <thead className={"border-b bg-gray-800"}>
+                    <thead className={"border-b bg-emerald-800"}>
                     <tr>
                       <th scope={"col"} className={"text-sm font-medium text-white px-6 py-4"}>
                         Machine
@@ -88,31 +89,7 @@ export default function ImagesTable(): JSX.Element {
             <h5>Please select a machine</h5>
           )}
           {currentImage && (
-            <div>
-              <h5 className={"text-gray-900 text-xl font-medium mb-2"}>
-                Selected machine
-              </h5>
-
-              <div className={"py-6"}>
-                <h5 className={"text-gray-900 text-xl font-medium mb-2 mx-1"}>
-                  ID: {currentImage.id}
-                </h5>
-
-                <h5 className={"text-gray-900 text-xl font-medium mb-2 mx-1"}>
-                  Tags
-                </h5>
-
-                <ul className={"bg-white rounded-lg border border-gray-200 w-96 text-gray-900"}>
-                  {currentImage.tags.map((tag: string) => {
-                    return <li className={"px-6 py-2 border-b border-gray-200 w-full rounded-t-lg"}>
-                      {tag}
-                    </li>
-                  })}
-                </ul>
-
-                <StartContainerForm image={currentImage}/>
-              </div>
-            </div>
+            <ImageDetails image={currentImage} />
           )}
         </div>
       </div>
