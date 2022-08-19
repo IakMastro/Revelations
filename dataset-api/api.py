@@ -1,4 +1,5 @@
 import re
+import json
 import numpy as np
 import pandas as pd
 
@@ -33,15 +34,15 @@ def index():
 
   if check_extention(path) == 'csv':
     df = pd.read_csv(path)
-    response_object["content"] = df.to_dict(orient="records")
+    return df.to_json(orient="records")
 
   elif check_extention(path) == 'xls':
     df = pd.read_excel(path)
-    response_object["content"] = df.to_dict(orient="records")
+    return df.to_json(orient="records")
 
   elif check_extention(path) == 'json':
     df = pd.read_json(path)
-    response_object["content"] = df.to_dict(orient="records")
+    return df.to_json(orient="records")
 
   else:
     response_object["error"] = "File type not supported."

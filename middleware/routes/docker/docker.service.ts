@@ -98,8 +98,8 @@ RUN apt-get upgrade && apt-get update &&\\
     apt-get -y install libc-dev build-essential &&\\
     pip install -r requirements.txt
 
-EXPOSE 8080
-CMD ["uvicorn", "app:app"]
+EXPOSE 8000
+CMD ["uvicorn", "--reload", "--host", "0.0.0.0", "app:app"]
 `
           }
         );
@@ -112,12 +112,14 @@ CMD ["uvicorn", "app:app"]
 from fastapi import FastAPI
 from functools import lru_cache
 
+import json
 import numpy as np
 import pandas as pd
 
 client = MongoClient("mongodb://${process.env.MONGO_URI}/?authSource=admin")
 datasets = client.revelations.datasets
-dataset = datasets.find_one({"dataset": "${dataset.name}"})
+dataset = datasets.find_one({"name": "${dataset.name}"})
+dataset = pd.DataFrame(json.dumps(dataset['data']))
 
 app = FastAPI()
 

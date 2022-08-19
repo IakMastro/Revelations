@@ -1,8 +1,8 @@
-import debug              from "debug";
-import mongooseService    from "../../common/services/mongoose.service";
-import shortid            from "shortid";
-import {DatasetDto} from "./dto/dataset.dto";
-import axios              from "axios";
+import debug           from "debug";
+import mongooseService from "../../common/services/mongoose.service";
+import shortid         from "shortid";
+import {DatasetDto}    from "./dto/dataset.dto";
+import axios           from "axios";
 
 const log: debug.IDebugger = debug("app:datasets-dao");
 
@@ -37,7 +37,7 @@ class DatasetsDao {
         type: String
       },
       data: {
-        type: Object,
+        type: [Object],
         default: []
       },
       created: {
@@ -66,8 +66,8 @@ class DatasetsDao {
    * @returns {object[]} The local dataset's data given by the path
    */
   async getData(path: string): Promise<object[]> {
-    let res = await axios.post("http://dataset-api:5000/", {path: path});
-    return res.data;
+    let {data} = await axios.post("http://dataset-api:5000/", {path: path});
+    return data;
   }
 
   /**
