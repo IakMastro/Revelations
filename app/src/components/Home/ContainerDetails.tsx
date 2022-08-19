@@ -29,16 +29,20 @@ export default function ContainerDetails({container}: ContainerDetailsProp): JSX
             </li>
           })}
         </ul>
-        <h5 className={"text-gray-900 text-xl font-medium mb-2 mx-1"}>
-          Ports:
-        </h5>
-        <ul className={"bg-white rounded-lg border border-gray-200 w-96 text-gray-900"}>
-          {container.ports.map((ports: number) => {
-            return <li className={"px-6 py-2 border-b border-gray-200 w-full rounded-t-lg"}>
-              {ports}
-            </li>
-          })}
-        </ul>
+        {container.ports && (
+          <>
+            <h5 className={"text-gray-900 text-xl font-medium mb-2 mx-1"}>
+              Ports:
+            </h5>
+            <ul className={"bg-white rounded-lg border border-gray-200 w-96 text-gray-900"}>
+              {container.ports.map((ports: number) => {
+                return <li className={"px-6 py-2 border-b border-gray-200 w-full rounded-t-lg"}>
+                  {ports}
+                </li>
+              })}
+            </ul>
+          </>
+        )}
         <h5 className={"text-gray-900 text-xl font-medium mb-2 mx-1"}>
           IP Addresses:
         </h5>
