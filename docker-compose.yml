@@ -8,9 +8,14 @@ services:
     ports:
       - "3000:3000"
     volumes:
-      - ./app:/app
+      - ./app/build:/app
     env_file:
       - .env
+    logging:
+      driver: "fluentd"
+      options:
+        fluentd-address: localhost:24224
+        tag: log.app
     networks:
       - revelations-net
 
@@ -25,6 +30,11 @@ services:
     volumes:
       - ./middleware:/api
       - ./data/files:/files
+    logging:
+      driver: "fluentd"
+      options:
+        fluentd-address: localhost:24224
+        tag: log.api
     networks:
       - revelations-net
 
@@ -36,6 +46,11 @@ services:
       - ./docker-api:/api
       - ./data/files:/files
       - /var/run/docker.sock:/var/run/docker.sock
+    logging:
+      driver: "fluentd"
+      options:
+        fluentd-address: localhost:24224
+        tag: log.docker
     networks:
       - revelations-net
 
@@ -50,6 +65,11 @@ services:
     volumes:
       - ./dataset-api:/api
       - ./data/files/datasets:/files
+    logging:
+      driver: "fluentd"
+      options:
+        fluentd-address: localhost:24224
+        tag: log.dataset
     networks:
       - revelations-net
 
@@ -103,6 +123,25 @@ services:
       - "8080:8080"
     depends_on:
       - postgres-oauth
+    logging:
+      driver: "fluentd"
+      options:
+        fluentd-address: localhost:24224
+        tag: log.auth
+    networks:
+      - revelations-net
+
+  fluentd:
+    build: logs
+    container_name: revelations-fluentd
+    hostname: fluentd
+    volumes:
+      - ./logs:/fluentd/etc
+    ports:
+      - "24224:24224"
+      - "24224:24224/udp"
+    depends_on:
+      - mongo
     networks:
       - revelations-net
 

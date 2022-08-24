@@ -8,8 +8,6 @@ import {getContainers}            from "../../services/container.service";
 import ContainerDetails           from "./ContainerDetails";
 
 import './ContainersTable.scss';
-import 'ag-grid-community/styles/ag-grid.min.css';
-import 'ag-grid-community/styles/ag-theme-alpine.min.css'
 
 export default function ContainersTable(): JSX.Element {
   const {isLoading, isError, error, data} = useQuery('getContainers', getContainers);
