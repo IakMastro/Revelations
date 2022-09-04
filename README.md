@@ -80,10 +80,10 @@ You can install [a desktop GUI if your platform supports it!](https://www.docker
 
 ## How to run
 
-### Development envirnoment
+### Development environment
 
 ```bash
-docker-compose up
+./run.sh
 ```
 
 ## Contribute
