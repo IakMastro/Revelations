@@ -11,6 +11,9 @@ services:
       - ./app/build:/app
     env_file:
       - .env
+    depends_on:
+      - fluentd
+      - middleware
     logging:
       driver: "fluentd"
       options:
@@ -27,6 +30,11 @@ services:
       - "5000:5000"
     environment:
       - MONGO_URI=dbuser:dbpass@mongo:27017
+    depends_on:
+      - docker-api
+      - dataset-api
+      - mongo
+      - fluentd
     volumes:
       - ./middleware:/api
       - ./data/files:/files
@@ -42,6 +50,8 @@ services:
     build: docker-api
     container_name: docker-management-api
     hostname: docker-api
+    depends_on:
+      - fluentd
     volumes:
       - ./docker-api:/api
       - ./data/files:/files
@@ -62,6 +72,8 @@ services:
       FLASK_APP: api
       FLASK_HOST: 0.0.0.0
       FLASK_ENV: development
+    depends_on:
+      - fluentd
     volumes:
       - ./dataset-api:/api
       - ./data/files/datasets:/files
@@ -123,6 +135,7 @@ services:
       - "8080:8080"
     depends_on:
       - postgres-oauth
+      - fluentd
     logging:
       driver: "fluentd"
       options:
@@ -142,6 +155,15 @@ services:
       - "24224:24224/udp"
     depends_on:
       - mongo
+    networks:
+      - revelations-net
+
+  docs:
+    build: docs
+    container_name: revelations-docs
+    hostname: docs
+    volumes:
+      - ./docs:/app
     networks:
       - revelations-net
 
