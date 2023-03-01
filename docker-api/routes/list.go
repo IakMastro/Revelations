@@ -3,10 +3,9 @@ package routes
 import (
 	"context"
 	"docker-management-api/lib"
-	"net/http"
-
+	"encoding/json"
 	"github.com/docker/docker/api/types"
-	"github.com/gin-gonic/gin"
+	"net/http"
 )
 
 // ListContainer is a type that includes the component of a container that is currently running.
@@ -33,7 +32,7 @@ type Volume struct {
 }
 
 // List is a function that simulates the docker ps unix command.
-func List(c *gin.Context) {
+func List(w http.ResponseWriter, r *http.Request) {
 	cli := lib.InitDockerCli()
 
 	// Function that returns the currently running containers.
@@ -77,6 +76,7 @@ func List(c *gin.Context) {
 			Volumes:  volumes,
 		})
 	}
-
-	c.JSON(http.StatusOK, containersList)
+	w.WriteHeader(http.StatusOK)
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(containersList)
 }

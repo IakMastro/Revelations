@@ -3,10 +3,9 @@ package routes
 import (
 	"context"
 	"docker-management-api/lib"
+	"encoding/json"
 	"fmt"
 	"net/http"
-
-	"github.com/gin-gonic/gin"
 )
 
 // StopContainer is a type that stops the container.
@@ -16,11 +15,11 @@ type StopContainer struct {
 }
 
 // Stop is a function that stops a running container.
-func Stop(c *gin.Context) {
+func Stop(w http.ResponseWriter, r *http.Request) {
 	var container StopContainer
 
-	if err := c.ShouldBindJSON(&container); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+	if err := json.NewDecoder(r.Body).Decode(&container); err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
 
@@ -29,8 +28,11 @@ func Stop(c *gin.Context) {
 
 	fmt.Print("Stopping container: ", container.ID[:10], "...")
 	if err := cli.ContainerStop(ctx, container.ID, nil); err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
-	} else {
-		c.JSON(http.StatusOK, gin.H{"message": "Container stopped"})
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
 	}
+
+	w.WriteHeader(http.StatusOK)
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(map[string]string{"message": "Container stopped"})
 }

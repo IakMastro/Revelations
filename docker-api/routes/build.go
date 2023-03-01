@@ -7,10 +7,10 @@ import (
 	"net/http"
 	"time"
 
+	"encoding/json"
 	"github.com/docker/docker/api/types"
 	"github.com/docker/docker/client"
 	"github.com/docker/docker/pkg/archive"
-	"github.com/gin-gonic/gin"
 )
 
 // BuildImage is a type that includes the two neccessary components to build a new Image.
@@ -56,19 +56,20 @@ func imageBuildFunction(dockerClient *client.Client, imageBuild *BuildImage) err
 }
 
 // Build function is a public class that calls the imageBuildFunction and returns a message to the API.
-func Build(c *gin.Context) {
+func Build(w http.ResponseWriter, r *http.Request) {
 	var imageBuild BuildImage
 
-	if err := c.ShouldBindJSON(&imageBuild); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+	if err := json.NewDecoder(r.Body).Decode(&imageBuild); err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
 
 	err := imageBuildFunction(lib.InitDockerCli(), &imageBuild)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-
-	c.JSON(http.StatusOK, gin.H{"message": "Image was built successfully"})
+	w.WriteHeader(http.StatusOK)
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(map[string]string{"message": "Image was built successfully"})
 }

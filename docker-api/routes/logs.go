@@ -3,22 +3,21 @@ package routes
 import (
 	"context"
 	"docker-management-api/lib"
-	"net/http"
-
 	"github.com/docker/docker/api/types"
-	"github.com/gin-gonic/gin"
+	"github.com/go-chi/chi/v5"
+	"net/http"
 )
 
 // Function that prints the logs of a container.
-func Logs(c *gin.Context) {
+func Logs(w http.ResponseWriter, r *http.Request) {
 	ctx := context.Background()
 	cli := lib.InitDockerCli()
 
 	options := types.ContainerLogsOptions{ShowStdout: true, ShowStderr: true, Follow: true}
-	out, err := cli.ContainerLogs(ctx, c.Param("id"), options)
+	out, err := cli.ContainerLogs(ctx, chi.URLParam(r, "id"), options)
 
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 

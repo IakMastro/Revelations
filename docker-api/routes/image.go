@@ -3,20 +3,20 @@ package routes
 import (
 	"context"
 	"docker-management-api/lib"
-	"net/http"
-
+	"encoding/json"
 	"github.com/docker/docker/api/types"
-	"github.com/gin-gonic/gin"
+	"net/http"
 )
 
 // ImageList function returns the images that are built on the Docker engine
-func ImageList(c *gin.Context) {
+func ImageList(w http.ResponseWriter, r *http.Request) {
 	cli := lib.InitDockerCli()
 	images, err := cli.ImageList(context.Background(), types.ImageListOptions{})
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-
-	c.JSON(http.StatusOK, images)
+	w.WriteHeader(http.StatusOK)
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(images)
 }
