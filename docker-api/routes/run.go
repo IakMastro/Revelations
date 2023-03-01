@@ -3,12 +3,12 @@ package routes
 import (
 	"context"
 	"docker-management-api/lib"
-	"net/http"
+	"encoding/json"
 	"github.com/docker/docker/api/types"
 	"github.com/docker/docker/api/types/container"
 	"github.com/docker/docker/api/types/network"
 	"github.com/docker/go-connections/nat"
-	"github.com/gin-gonic/gin"
+	"net/http"
 )
 
 // RunContainer is a type that enables an image to run. It has tag and name as it's fields.
@@ -19,11 +19,11 @@ type RunContainer struct {
 
 // Run is a function that runs an image based on a few parameters that the user has given from the web app.
 // In the future, the port could also be a part of info that is extracted from the front end.
-func Run(c *gin.Context) {
+func Run(w http.ResponseWriter, r *http.Request) {
 	var args RunContainer
 
-	if err := c.ShouldBindJSON(&args); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+	if err := json.NewDecoder(r.Body).Decode(&args); err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
 
@@ -33,7 +33,7 @@ func Run(c *gin.Context) {
 	resp, err := cli.ContainerCreate(
 		ctx,
 		&container.Config{
-			Image: args.Name,
+			Image:        args.Name,
 			ExposedPorts: nat.PortSet{nat.Port("8000/tcp"): {}},
 		},
 		&container.HostConfig{
@@ -45,7 +45,7 @@ func Run(c *gin.Context) {
 				},
 			},
 			Resources: container.Resources{
-				Memory:     1024 * 1000000,
+				Memory: 1024 * 1000000,
 			},
 		},
 		nil,
@@ -54,12 +54,12 @@ func Run(c *gin.Context) {
 	)
 
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		http.Error(w, err.Error(), http.StatusInternalServerError)
 		panic(err)
 	}
 
 	if err := cli.ContainerStart(ctx, resp.ID, types.ContainerStartOptions{}); err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		http.Error(w, err.Error(), http.StatusInternalServerError)
 		panic(err)
 	}
 
@@ -67,9 +67,11 @@ func Run(c *gin.Context) {
 	err = cli.NetworkConnect(ctx, "98dff6e1d6f2e8826858f480bb2a9f71bc10aeabc3437dd283d7b085981fbad5", resp.ID, &network.EndpointSettings{})
 
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
-		panic(err)
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{"id": resp.ID})
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
+	json.NewEncoder(w).Encode(map[string]string{"id": resp.ID})
 }
