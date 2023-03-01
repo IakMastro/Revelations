@@ -1,12 +1,26 @@
 package main
 
 import (
+	"context"
 	"docker-management-api/routes"
-	"net/http"
-
+	"github.com/docker/docker/client"
 	"github.com/go-chi/chi/v5"
 	"log"
+	"net/http"
 )
+
+func init() {
+	cli, err := client.NewClientWithOpts(client.FromEnv)
+	if err != nil {
+		panic(err)
+	}
+
+	// Ping the Docker daemon to check if it's running
+	if _, err := cli.Ping(context.Background()); err != nil {
+		log.Println("Docker daemon is not running")
+		panic(err)
+	}
+}
 
 // Main function in which the routes are configured.
 func main() {
